@@ -133,18 +133,19 @@ function errorHandling() {
     .catch(err => {
         if(err.response)
         {
-            //Server responded with other than the 200 range
+            //Server responded with other than the 200 range(i.e., success range)
             console.log(err.response.data);
             console.log(err.response.status);
             console.log(err.response.headers);
         }
         else if(err.request)
         {
-            //Request was made but no response
+            //Request was made but no response received
             console.error(err.request);
         }
         else
         {
+            // Something happened in setting up the request that triggered an Error
             console.error(err.message);
         }
     });
@@ -173,14 +174,17 @@ function cancelToken() {
 }
 
 // INTERCEPTING REQUESTS & RESPONSES - It should not be inside any function 
+// This is a request interceptor. We can also create a response interceptor. Get the code at : https://www.npmjs.com/package/axios
 axios.interceptors.request.use(
     config => {
+            // Do something before request is sent
             console.log(
             `${config.method.toUpperCase()} request sent to ${config.url} at ${new Date().getTime()}`
         );
 
         return config;
     },
+    // Do something with request error
     err => { return Promise.reject(err); }
 );
 
